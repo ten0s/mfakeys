@@ -26,7 +26,13 @@ class EC_OR:
          except:
             pass
 
-CONFIG_FILE_NAME=os.getenv("HOME") + "/" + ".mfakeysrc"
+CONFIG_FILE_NAME = os.getenv("HOME") + "/" + ".mfakeysrc"
+
+DEBUG = 0
+try:
+  DEBUG = int(os.getenv("DEBUG"))
+except:
+   pass
 
 def read_config(section, key):
    config = ConfigParser.ConfigParser()
@@ -57,6 +63,7 @@ def eprint(*args, **kwargs):
    print(*args, file=sys.stderr, **kwargs)
 
 if __name__ == "__main__":
+   if DEBUG == 3: import pdb; pdb.set_trace()
    parser = argparse.ArgumentParser(description="AWS MFA Keys Fetcher")
    parser.add_argument("-u", "--username",
                        help="User name. Read from '" + CONFIG_FILE_NAME + "' if not provided",
@@ -72,14 +79,10 @@ if __name__ == "__main__":
    parser.add_argument("--url",
                        help="Auth URL. Read from '" + CONFIG_FILE_NAME + "' if not provided",
                        default="")
-   parser.add_argument("--debug",
-                       help="Show browser for debugging",
-                       action="store_true")
    args = parser.parse_args()
    argsd = vars(args)
 
    base_dir = base_dir()
-   debug = args.debug
    code = args.code
 
    username = get_arg(argsd, "username", True)
@@ -87,7 +90,7 @@ if __name__ == "__main__":
    account = get_arg(argsd, "account", False)
    url = get_arg(argsd, "url", True)
 
-   if debug:
+   if DEBUG > 0:
       print("Username: " + username)
       print("Password: " + password)
       print("Code: " + code)
@@ -101,7 +104,7 @@ if __name__ == "__main__":
       list_accounts = True
 
    chrome_options = webdriver.ChromeOptions()
-   if not debug:
+   if DEBUG < 2:
       chrome_options.add_argument("--headless")
    chrome_options.add_argument("--disable-gpu")
    driver = webdriver.Chrome(
@@ -165,8 +168,10 @@ if __name__ == "__main__":
 
    except TimeoutException:
       eprint("Error: Timeout")
+      sys.exit(1)
    except Exception as e:
       eprint("Error: " + str(e))
+      sys.exit(1)
    finally:
-      if not debug:
+      if DEBUG < 2:
          driver.quit()

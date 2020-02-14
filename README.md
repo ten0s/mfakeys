@@ -48,3 +48,22 @@ password=PASSWORD
 url=URL
 $ dist/mfakeys -c CODE -a ACCOUNT
 </pre>
+
+### Debugging
+
+#### Print debug info
+<pre>
+$ DEBUG=1 dist/mfakeys -c CODE -a ACCOUNT
+</pre>
+
+#### Print debug info and show browser
+<pre>
+$ DEBUG=2 dist/mfakeys -c CODE -a ACCOUNT
+</pre>
+
+#### Print debug info, show browser and run under [pdb](https://docs.python.org/2/library/pdb.html)
+<pre>
+$ DEBUG=3 dist/mfakeys -c CODE -a ACCOUNT
+(Pdb) break 149
+(Pdb) continue
+</pre>
