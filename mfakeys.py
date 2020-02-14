@@ -136,19 +136,20 @@ if __name__ == "__main__":
 
       if list_accounts:
          print(driver.find_element_by_xpath("//portal-application").text + ":")
+         print()
 
       driver.find_element_by_xpath("//portal-application").click()
-      accounts_raw = driver.find_element_by_xpath("//portal-instance-list").text
+      elements = driver.find_elements_by_xpath("//portal-instance-list/*")
+      accounts = map(lambda a: a.text, elements)
 
-      if not list_accounts and accounts_raw.find(account) == -1:
-         raise Exception("Account ID not found")
-
-      accounts = accounts_raw.split("\n")
+      found = False
       for i in xrange(len(accounts)):
          if list_accounts:
             print(accounts[i])
+            print()
 
          if not list_accounts and accounts[i].find(account) != -1:
+            found = True
             instance = driver.find_elements_by_tag_name("portal-instance")[i]
             instance.click()
             driver.implicitly_wait(1)
@@ -157,6 +158,10 @@ if __name__ == "__main__":
                EC.element_to_be_clickable((By.ID, "env-var-linux"))
             )
             print(driver.find_element_by_id("env-var-linux").text.replace("\"", ""))
+            break
+
+      if not list_accounts and not found:
+         raise("Account {} not found".format(account))
 
    except TimeoutException:
       eprint("Error: Timeout")
