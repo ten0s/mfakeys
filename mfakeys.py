@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
       driver.find_element_by_xpath("//portal-application").click()
       elements = driver.find_elements_by_xpath("//portal-instance-list/*")
-      accounts = map(lambda a: a.text, elements)
+      accounts = filter(lambda a: a != '', map(lambda a: a.text, elements))
 
       found = False
       for i in xrange(len(accounts)):
@@ -151,7 +151,7 @@ if __name__ == "__main__":
             print(accounts[i])
             print()
 
-         if not list_accounts and accounts[i].find(account) != -1:
+         if not list_accounts and accounts[i].find("#{} ".format(account)) != -1:
             found = True
             instance = driver.find_elements_by_tag_name("portal-instance")[i]
             instance.click()
@@ -164,7 +164,7 @@ if __name__ == "__main__":
             break
 
       if not list_accounts and not found:
-         raise("Account {} not found".format(account))
+         raise Exception("Account {} not found".format(account))
 
    except TimeoutException:
       eprint("Error: Timeout")
