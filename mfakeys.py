@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import sys
 import argparse
+import subprocess
 import ConfigParser
 
 from selenium import webdriver
@@ -72,7 +73,8 @@ if __name__ == "__main__":
                        help="Password. Read from '" + CONFIG_FILE_NAME + "' if not provided",
                        default="")
    parser.add_argument("-c", "--code",
-                       help="MFA Code", required=True)
+                       help="MFA Code. Read from '" + CONFIG_FILE_NAME + "' if not provided",
+                       default="")
    parser.add_argument("-a", "--account",
                        help="Account ID. List accounts if not provided",
                        default="")
@@ -82,13 +84,13 @@ if __name__ == "__main__":
    args = parser.parse_args()
    argsd = vars(args)
 
-   base_dir = base_dir()
-   code = args.code
-
    username = get_arg(argsd, "username", True)
    password = get_arg(argsd, "password", True)
-   account = get_arg(argsd, "account", False)
-   url = get_arg(argsd, "url", True)
+   code     = get_arg(argsd, "code",     True)
+   account  = get_arg(argsd, "account",  False)
+   url      = get_arg(argsd, "url",      True)
+
+   base_dir = base_dir()
 
    if DEBUG > 0:
       print("Username: " + username)
@@ -123,6 +125,11 @@ if __name__ == "__main__":
       WebDriverWait(driver, 5).until(
          EC.visibility_of_element_located((By.ID, "wdc_mfacode"))
       )
+
+      if os.path.isfile(os.path.expanduser(code)):
+         out = subprocess.check_output([code])
+         code = out.split()[0]
+
       driver.find_element_by_id("wdc_mfacode").send_keys(code)
       driver.find_element_by_id("wdc_login_button").click()
       # auth and wait

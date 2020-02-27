@@ -45,6 +45,7 @@ $ cat ~/.mfakeysrc
 [default]
 username=USERNAME
 password=PASSWORD
+code=CODE | PATH_TO_SCRIPT
 url=URL
 $ dist/mfakeys -c CODE -a ACCOUNT
 </pre>
