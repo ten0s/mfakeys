@@ -162,7 +162,9 @@ if __name__ == "__main__":
             found = True
             instance = driver.find_elements_by_tag_name("portal-instance")[i]
             instance.click()
-            driver.implicitly_wait(1)
+            WebDriverWait(driver, 5).until(
+               EC.element_to_be_clickable((By.ID, "temp-credentials-button"))
+            )
             instance.find_element_by_id("temp-credentials-button").click()
             WebDriverWait(driver, 30).until(
                EC.element_to_be_clickable((By.ID, "env-var-linux"))
