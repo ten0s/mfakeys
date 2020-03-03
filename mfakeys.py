@@ -94,7 +94,6 @@ if __name__ == "__main__":
 
    if DEBUG > 0:
       print("Username: " + username)
-      print("Password: " + password)
       print("Code: " + code)
       print("Account: " + account)
       print("Url: " + url)
