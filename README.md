@@ -1,9 +1,8 @@
 Fetch AWS MFA accounts and security keys from [Chrome](https://www.google.com/chrome/) using [Selenium for Python](https://selenium-python.readthedocs.io/).
 
-
 ## Prerequisites
 
-In order to build **mfakeys** you need to have [Python 2.7](https://www.python.org/download/releases/2.7/),
+In order to build **mfakeys** you need to have [Python 3.6.*](https://www.python.org/downloads/release/python-360/),
 [Virtualenv](https://virtualenv.pypa.io/en/latest/) and
 [GNU Make](http://www.gnu.org/software/make/) installed.
 

@@ -1,10 +1,8 @@
-from __future__ import print_function
-
 import os
 import sys
 import argparse
 import subprocess
-import ConfigParser
+import configparser
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -36,7 +34,7 @@ except:
    pass
 
 def read_config(section, key):
-   config = ConfigParser.ConfigParser()
+   config = configparser.ConfigParser()
    config.read(CONFIG_FILE_NAME)
    return config.get(section, key)
 
@@ -93,6 +91,7 @@ if __name__ == "__main__":
    base_dir = base_dir()
 
    if DEBUG > 0:
+      print("Python: " + sys.version.split('\n')[0])
       print("Username: " + username)
       print("Password: " + "*" * len(password))
       print("Code: " + code)
@@ -128,7 +127,7 @@ if __name__ == "__main__":
 
       if os.path.isfile(os.path.expanduser(code)):
          out = subprocess.check_output([code])
-         code = out.split()[0]
+         code = out.split()[0].decode("utf-8")
 
       driver.find_element_by_id("wdc_mfacode").send_keys(code)
       driver.find_element_by_id("wdc_login_button").click()
@@ -150,10 +149,10 @@ if __name__ == "__main__":
 
       driver.find_element_by_xpath("//portal-application").click()
       elements = driver.find_elements_by_xpath("//portal-instance-list/*")
-      accounts = filter(lambda a: a != '', map(lambda a: a.text, elements))
+      accounts = list(filter(lambda a: a != '', map(lambda a: a.text, elements)))
 
       found = False
-      for i in xrange(len(accounts)):
+      for i in range(len(accounts)):
          if list_accounts:
             print(accounts[i])
             print()
