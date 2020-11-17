@@ -114,23 +114,33 @@ if __name__ == "__main__":
    )
    try:
       driver.get(url)
+
+      # wait for inital form
       WebDriverWait(driver, 30).until(
+        EC.element_to_be_clickable((By.ID, "username-submit-button"))
+      )
+      driver.find_element_by_id("awsui-input-0").send_keys(username)
+      driver.find_element_by_id("username-submit-button").click()
+
+      # wait for credentials form
+      WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, "wdc_login_button"))
       )
-      driver.find_element_by_id("wdc_username").send_keys(username)
+      # disabled
+      #driver.find_element_by_id("wdc_username").send_keys(username)
       driver.find_element_by_id("wdc_password").send_keys(password)
       driver.find_element_by_id("wdc_login_button").click()
-      # proceed to the next form
-      WebDriverWait(driver, 5).until(
+
+      # wait for MFA code
+      WebDriverWait(driver, 10).until(
          EC.visibility_of_element_located((By.ID, "wdc_mfacode"))
       )
-
       if os.path.isfile(os.path.expanduser(code)):
          out = subprocess.check_output([code])
          code = out.split()[0].decode("utf-8")
-
       driver.find_element_by_id("wdc_mfacode").send_keys(code)
       driver.find_element_by_id("wdc_login_button").click()
+
       # auth and wait
       WebDriverWait(driver, 60).until(EC_OR(
          EC.visibility_of_element_located((By.XPATH, "//*[@id='alertFrame']/div")),
