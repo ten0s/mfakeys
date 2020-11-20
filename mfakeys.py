@@ -79,7 +79,7 @@ if __name__ == "__main__":
    parser.add_argument("--url",
                        help="Auth URL. Read from '" + CONFIG_FILE_NAME + "' if not provided",
                        default="")
-   parser.add_argument("-v", "--version",
+   parser.add_argument("--version",
                        help="Version",
                        action="version",
                        version="2020-11-17")
