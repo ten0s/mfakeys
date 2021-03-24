@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
-# don't print exception stack trace
+# Don't print exception stack trace
 sys.tracebacklimit = 0
 
 class EC_OR:
@@ -52,7 +52,7 @@ def get_arg(argsd, name, required):
 
 def base_dir():
    try:
-      # under PyInstaler
+      # Under PyInstaler
       return sys._MEIPASS
    except:
       return os.getcwd()
@@ -103,7 +103,7 @@ if __name__ == "__main__":
       print("Url: " + url)
       print("Dir: " + base_dir)
 
-   # if ID is not given the just accounts
+   # If Account ID is not given then just list accounts
    list_accounts = False
    if account == None or account == "":
       list_accounts = True
@@ -119,24 +119,24 @@ if __name__ == "__main__":
    try:
       driver.get(url)
 
-      # wait for inital form
-      WebDriverWait(driver, 30).until(
+      # Wait for inital form
+      WebDriverWait(driver, 60).until(
         EC.element_to_be_clickable((By.ID, "username-submit-button"))
       )
       driver.find_element_by_id("awsui-input-0").send_keys(username)
       driver.find_element_by_id("username-submit-button").click()
 
-      # wait for credentials form
-      WebDriverWait(driver, 10).until(
+      # Wait for credentials form
+      WebDriverWait(driver, 30).until(
         EC.element_to_be_clickable((By.ID, "wdc_login_button"))
       )
-      # disabled
+      # Disabled
       #driver.find_element_by_id("wdc_username").send_keys(username)
       driver.find_element_by_id("wdc_password").send_keys(password)
       driver.find_element_by_id("wdc_login_button").click()
 
-      # wait for MFA code
-      WebDriverWait(driver, 10).until(
+      # Wait for MFA code
+      WebDriverWait(driver, 15).until(
          EC.visibility_of_element_located((By.ID, "wdc_mfacode"))
       )
       if os.path.isfile(os.path.expanduser(code)):
@@ -145,7 +145,7 @@ if __name__ == "__main__":
       driver.find_element_by_id("wdc_mfacode").send_keys(code)
       driver.find_element_by_id("wdc_login_button").click()
 
-      # auth and wait
+      # Auth and wait
       WebDriverWait(driver, 60).until(EC_OR(
          EC.visibility_of_element_located((By.XPATH, "//*[@id='alertFrame']/div")),
          EC.element_to_be_clickable((By.XPATH, "//portal-application"))
@@ -154,7 +154,7 @@ if __name__ == "__main__":
          driver.find_element_by_xpath("//*[@id='alertFrame']/div")
          raise Exception("Authentication Failed")
       except NoSuchElementException:
-         # if alertFrame is not found then auth is successful, go to the next page
+         # If alertFrame is not found then auth is successful, go to the next page
          pass
 
       if list_accounts:
