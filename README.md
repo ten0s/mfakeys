@@ -22,19 +22,24 @@ $ make
 $ dist/mfakeys -h
 </pre>
 
-### Print all AWS accounts (no account privided)
+### Print AWS accounts (no account privided)
 <pre>
-$ dist/mfakeys -u USERNAME -p PASSWORD -c CODE --url URL
+$ dist/mfakeys -U USERNAME -P PASSWORD -C CODE --url URL
 </pre>
 
-### Print AWS keys for an account
+### Print AWS account's profiles (no profile privided)
 <pre>
-$ dist/mfakeys -u USERNAME -p PASSWORD -c CODE -a ACCOUNT --url URL
+$ dist/mfakeys -U USERNAME -P PASSWORD -C CODE -a ACCOUNT --url URL
 </pre>
 
-### Use AWS keys for an account
+### Print AWS keys for an account and its profile
 <pre>
-$ $(dist/mfakeys -u USERNAME -p PASSWORD -c CODE -a ACCOUNT --url URL)
+$ dist/mfakeys -U USERNAME -P PASSWORD -C CODE -a ACCOUNT -p PROFILE --url URL
+</pre>
+
+### Use AWS keys for an account and its profile
+<pre>
+$ $(dist/mfakeys -U USERNAME -P PASSWORD -C CODE -a ACCOUNT -p PROFILE --url URL)
 $ aws ec2 describe-instances
 </pre>
 
@@ -46,24 +51,24 @@ username=USERNAME
 password=PASSWORD
 code=CODE | PATH_TO_SCRIPT
 url=URL
-$ dist/mfakeys -c CODE -a ACCOUNT
+$ dist/mfakeys -a ACCOUNT -p PROFILE
 </pre>
 
 ### Debugging
 
 #### Print debug info
 <pre>
-$ DEBUG=1 dist/mfakeys -c CODE -a ACCOUNT
+$ DEBUG=1 dist/mfakeys -a ACCOUNT -p PROFILE
 </pre>
 
 #### Print debug info and show browser
 <pre>
-$ DEBUG=2 dist/mfakeys -c CODE -a ACCOUNT
+$ DEBUG=2 dist/mfakeys -a ACCOUNT -p PROFILE
 </pre>
 
-#### Print debug info, show browser and run under [pdb](https://docs.python.org/2/library/pdb.html)
+#### Print debug info, show browser and run under [pdb](https://docs.python.org/3/library/pdb.html)
 <pre>
-$ DEBUG=3 dist/mfakeys -c CODE -a ACCOUNT
-(Pdb) break 149
+$ DEBUG=3 dist/mfakeys -a ACCOUNT -p PROFILE
+(Pdb) break 130
 (Pdb) continue
 </pre>

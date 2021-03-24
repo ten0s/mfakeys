@@ -64,19 +64,19 @@ def eprint(*args, **kwargs):
 if __name__ == "__main__":
    if DEBUG == 3: import pdb; pdb.set_trace()
    parser = argparse.ArgumentParser(description="AWS MFA Keys Fetcher")
-   parser.add_argument("-u", "--username",
+   parser.add_argument("-U", "--username",
                        help="User name. Read from '" + CONFIG_FILE_NAME + "' if not provided",
                        default="")
-   parser.add_argument("-p", "--password",
+   parser.add_argument("-P", "--password",
                        help="Password. Read from '" + CONFIG_FILE_NAME + "' if not provided",
                        default="")
-   parser.add_argument("-c", "--code",
+   parser.add_argument("-C", "--code",
                        help="MFA Code. Read from '" + CONFIG_FILE_NAME + "' if not provided",
                        default="")
    parser.add_argument("-a", "--account",
                        help="Account ID. List accounts if not provided",
                        default="")
-   parser.add_argument("-P", "--profile",
+   parser.add_argument("-p", "--profile",
                        help="Profile ID for Account ID. List account's profiles if not provided",
                        default="")
    parser.add_argument("--url",
@@ -85,7 +85,7 @@ if __name__ == "__main__":
    parser.add_argument("--version",
                        help="Version",
                        action="version",
-                       version="2020-11-17")
+                       version="Schema: 2020-11-17 Code: 2021-03-24")
    args = parser.parse_args()
    argsd = vars(args)
 
