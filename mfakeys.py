@@ -76,6 +76,9 @@ if __name__ == "__main__":
    parser.add_argument("-a", "--account",
                        help="Account ID. List accounts if not provided",
                        default="")
+   parser.add_argument("-P", "--profile",
+                       help="Profile ID for Account ID. List account's profiles if not provided",
+                       default="")
    parser.add_argument("--url",
                        help="Auth URL. Read from '" + CONFIG_FILE_NAME + "' if not provided",
                        default="")
@@ -90,6 +93,7 @@ if __name__ == "__main__":
    password = get_arg(argsd, "password", True)
    code     = get_arg(argsd, "code",     True)
    account  = get_arg(argsd, "account",  False)
+   profile  = get_arg(argsd, "profile",  False)
    url      = get_arg(argsd, "url",      True)
 
    base_dir = base_dir()
@@ -100,13 +104,19 @@ if __name__ == "__main__":
       print("Password: " + "*" * len(password))
       print("Code: " + code)
       print("Account: " + account)
+      print("Profile: " + profile)
       print("Url: " + url)
       print("Dir: " + base_dir)
 
-   # If Account ID is not given then just list accounts
+   # If Account ID is not given then print accounts
    list_accounts = False
-   if account == None or account == "":
+   if not account:
       list_accounts = True
+
+   # If Profile ID is not given then print account's profiles
+   list_profiles = False
+   if not profile:
+      list_profiles = True
 
    chrome_options = webdriver.ChromeOptions()
    if DEBUG < 2:
@@ -163,30 +173,50 @@ if __name__ == "__main__":
 
       driver.find_element_by_xpath("//portal-application").click()
       elements = driver.find_elements_by_xpath("//portal-instance-list/*")
-      accounts = list(filter(lambda a: a != '', map(lambda a: a.text, elements)))
+      accounts = list(filter(lambda x: x != "", map(lambda x: x.text, elements)))
 
-      found = False
+      account_found = False
+      profile_found = False
       for i in range(len(accounts)):
          if list_accounts:
             print(accounts[i])
-            print()
 
-         if not list_accounts and accounts[i].find("#{} ".format(account)) != -1:
-            found = True
-            instance = driver.find_elements_by_tag_name("portal-instance")[i]
-            instance.click()
-            WebDriverWait(driver, 5).until(
+         if not list_accounts and accounts[i].find(f"#{account} ") != -1:
+            account_found = True
+            account_instance = driver.find_elements_by_tag_name("portal-instance")[i]
+            account_instance.click()
+            WebDriverWait(driver, 15).until(
+               # Look for any.
                EC.element_to_be_clickable((By.ID, "temp-credentials-button"))
             )
-            instance.find_element_by_id("temp-credentials-button").click()
-            WebDriverWait(driver, 30).until(
-               EC.element_to_be_clickable((By.ID, "env-var-linux"))
-            )
-            print(driver.find_element_by_id("env-var-linux").text.replace("\"", ""))
-            break
 
-      if not list_accounts and not found:
-         raise Exception("Account {} not found".format(account))
+            elements = driver.find_elements_by_xpath("//portal-profile/*")
+            profiles = list(filter(lambda x: x != "", map(lambda x: x.text.split("\n")[0], elements)))
+
+            profile_found = False
+            for j in range(len(profiles)):
+               if list_profiles:
+                  print(profiles[j])
+
+               if not list_profiles and profiles[j].find(profile) != -1:
+                  profile_found = True
+                  profile_instance = driver.find_elements_by_tag_name("portal-profile")[j]
+                  profile_instance.find_element_by_id("temp-credentials-button").click()
+                  WebDriverWait(driver, 30).until(
+                     EC.element_to_be_clickable((By.ID, "env-var-linux"))
+                  )
+                  print(driver.find_element_by_id("env-var-linux").text.replace("\"", ""))
+                  break
+            if profile_found:
+               break
+
+         if list_accounts:
+            print()
+
+      if not list_accounts and not account_found:
+         raise Exception(f"Account {account} not found")
+      if not list_profiles and not profile_found:
+         raise Exception(f"Profile {profile} not found")
 
    except TimeoutException:
       eprint("Error: Timeout")
