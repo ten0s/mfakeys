@@ -85,7 +85,7 @@ if __name__ == "__main__":
    parser.add_argument("--version",
                        help="Version",
                        action="version",
-                       version="Schema: 2020-11-17 Code: 2021-03-24")
+                       version="Schema: 2021-05-06 Code: 2021-05-06")
    args = parser.parse_args()
    argsd = vars(args)
 
@@ -129,31 +129,40 @@ if __name__ == "__main__":
    try:
       driver.get(url)
 
-      # Wait for inital form
+      # Wait for username form
       WebDriverWait(driver, 60).until(
         EC.element_to_be_clickable((By.ID, "username-submit-button"))
       )
-      driver.find_element_by_id("awsui-input-0").send_keys(username)
-      driver.find_element_by_id("username-submit-button").click()
-
-      # Wait for credentials form
-      WebDriverWait(driver, 30).until(
-        EC.element_to_be_clickable((By.ID, "wdc_login_button"))
+      input =  WebDriverWait(driver, 60).until(
+         EC.element_to_be_clickable((By.ID, "awsui-input-0"))
       )
-      # Disabled
-      #driver.find_element_by_id("wdc_username").send_keys(username)
-      driver.find_element_by_id("wdc_password").send_keys(password)
-      driver.find_element_by_id("wdc_login_button").click()
+      input.send_keys(username)
+      input.submit()
 
-      # Wait for MFA code
-      WebDriverWait(driver, 15).until(
-         EC.visibility_of_element_located((By.ID, "wdc_mfacode"))
+      # Wait for password form
+      WebDriverWait(driver, 60).until(
+        EC.element_to_be_clickable((By.ID, "password-submit-button"))
       )
+      input =  WebDriverWait(driver, 60).until(
+         EC.element_to_be_clickable((By.ID, "awsui-input-1"))
+      )
+      input.send_keys(password)
+      input.submit()
+
+      # Wait for MFA code form
+      WebDriverWait(driver, 60).until(
+         EC.element_to_be_clickable((By.XPATH, "//awsui-button[@data-testid='test-primary-button']/button"))
+      )
+      input =  WebDriverWait(driver, 60).until(
+         EC.element_to_be_clickable((By.ID, "awsui-input-0"))
+      )
+
       if os.path.isfile(os.path.expanduser(code)):
          out = subprocess.check_output([code])
          code = out.split()[0].decode("utf-8")
-      driver.find_element_by_id("wdc_mfacode").send_keys(code)
-      driver.find_element_by_id("wdc_login_button").click()
+
+      input.send_keys(code)
+      input.submit()
 
       # Auth and wait
       WebDriverWait(driver, 60).until(EC_OR(
