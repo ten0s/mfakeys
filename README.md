@@ -59,17 +59,17 @@ $ dist/mfakeys -a ACCOUNT -p PROFILE
 
 #### Print debug info
 <pre>
-$ DEBUG=1 dist/mfakeys -a ACCOUNT -p PROFILE
+$ DEBUG=1 dist/mfakeys [-a ACCOUNT -p PROFILE]
 </pre>
 
 #### Print debug info and show browser
 <pre>
-$ DEBUG=2 dist/mfakeys -a ACCOUNT -p PROFILE
+$ DEBUG=2 dist/mfakeys [-a ACCOUNT -p PROFILE]
 </pre>
 
 #### Print debug info, show browser and run under [pdb](https://docs.python.org/3/library/pdb.html)
 <pre>
-$ DEBUG=3 dist/mfakeys -a ACCOUNT -p PROFILE
+$ DEBUG=3 dist/mfakeys [-a ACCOUNT -p PROFILE]
 (Pdb) break 130
 (Pdb) continue
 </pre>
