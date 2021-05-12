@@ -1,4 +1,6 @@
-Fetch AWS MFA accounts and security keys from [Chrome](https://www.google.com/chrome/) using [Selenium for Python](https://selenium-python.readthedocs.io/).
+Fetch AWS MFA accounts and AWS keys, AWS CLI v2 automatic SSO login from
+[Chrome](https://www.google.com/chrome/) using
+[Selenium for Python](https://selenium-python.readthedocs.io/).
 
 ## Prerequisites
 
@@ -44,6 +46,14 @@ $ $(dist/mfakeys -U USERNAME -P PASSWORD -C CODE -a ACCOUNT -p PROFILE --url URL
 $ aws ec2 describe-instances
 </pre>
 
+### Automatic AWS CLI v2 SSO login
+
+See https://github.com/aws/aws-cli/issues/5061 and https://docs.python.org/3/library/webbrowser.html for detail
+
+<pre>
+$ BROWSER="mfakeys --login %s" aws sso login --profile PROFILE
+</pre>
+
 ### Resource file
 <pre>
 $ cat ~/.mfakeysrc
@@ -60,16 +70,24 @@ $ dist/mfakeys -a ACCOUNT -p PROFILE
 #### Print debug info
 <pre>
 $ DEBUG=1 dist/mfakeys [-a ACCOUNT -p PROFILE]
+$ DEBUG=1 BROWSER="dist/mfakeys --login %s" aws sso login --profile PROFILE
 </pre>
 
 #### Print debug info and show browser
 <pre>
 $ DEBUG=2 dist/mfakeys [-a ACCOUNT -p PROFILE]
+$ DEBUG=2 BROWSER="dist/mfakeys --login %s" aws sso login --profile PROFILE
 </pre>
 
 #### Print debug info, show browser and run under [pdb](https://docs.python.org/3/library/pdb.html)
 <pre>
 $ DEBUG=3 dist/mfakeys [-a ACCOUNT -p PROFILE]
+(Pdb) break 130
+(Pdb) continue
+</pre>
+
+<pre>
+$ DEBUG=3 BROWSER="dist/mfakeys --login %s" aws sso login --profile PROFILE
 (Pdb) break 130
 (Pdb) continue
 </pre>
