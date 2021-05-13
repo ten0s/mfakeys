@@ -14,6 +14,7 @@ from selenium.common.exceptions import TimeoutException
 # Don't print exception stack trace
 sys.tracebacklimit = 0
 
+# TODO: Upgrade to Selenium 4+ and use EC.any_of()
 class EC_OR:
    def __init__(self, *args):
       self.ecs = args
@@ -114,14 +115,14 @@ def do_account(driver, username, password, code, url):
    # Wait for auth result
    WebDriverWait(driver, 60).until(EC_OR(
       # Some error
-      EC.visibility_of_element_located((By.XPATH, "//*[@id='alertFrame']/div")),
+      EC.visibility_of_element_located((By.XPATH, "//*[@id='alertFrame']/div/*[normalize-space()]")),
       # Credentials
       EC.element_to_be_clickable((By.XPATH, "//portal-application"))
    ))
 
    # Some error?
    try:
-      alert = driver.find_element_by_xpath("//*[@id='alertFrame']/div")
+      alert = driver.find_element_by_xpath("//*[@id='alertFrame']/div/*[normalize-space()]")
       raise Exception(alert.text)
    except NoSuchElementException:
       # If not alert then auth is successful, go to the next page
@@ -205,8 +206,8 @@ def do_login(driver, username, password, code, url_with_user_code):
    # Wait for user_code result
    WebDriverWait(driver, 60).until(EC_OR(
       # Some error
-      EC.visibility_of_element_located((By.XPATH, "//*[@id='alertFrame']/div")),
-      # Logged in
+      EC.visibility_of_element_located((By.XPATH, "//*[@id='alertFrame']/div/*[normalize-space()]")),
+      # Already Logged in
       EC.element_to_be_clickable((By.ID, "cli_login_button")),
       # Auth
       EC.element_to_be_clickable((By.ID, "username-submit-button"))
@@ -214,17 +215,17 @@ def do_login(driver, username, password, code, url_with_user_code):
 
    # Some error?
    try:
-      alert = driver.find_element_by_xpath("//*[@id='alertFrame']/div")
-      if alert.text:
-         raise Exception(alert.text)
+      alert = driver.find_element_by_xpath("//*[@id='alertFrame']/div/*[normalize-space()]")
+      raise Exception(alert.text)
    except NoSuchElementException:
       # If not alert or empty then user_code is correct, fall through
       pass
 
-   # Logged in?
+   # Already Logged in?
    try:
       button = driver.find_element_by_id("cli_login_button")
       button.click()
+      return
    except NoSuchElementException:
       # If login button is not found then is not logged in, fall through
       pass
@@ -235,22 +236,42 @@ def do_login(driver, username, password, code, url_with_user_code):
    # Wait for auth result
    WebDriverWait(driver, 60).until(EC_OR(
       # Some error
-      EC.visibility_of_element_located((By.XPATH, "//*[@id='alertFrame']/div")),
-      # Logged in
-      EC.element_to_be_clickable((By.ID, "cli_login_button")),
+      EC.visibility_of_element_located((By.XPATH, "//*[@id='alertFrame']/div/*[normalize-space()]")),
+      # Log in
+      EC.element_to_be_clickable((By.ID, "cli_login_button"))
    ))
 
    # Some error?
    try:
-      alert = driver.find_element_by_xpath("//*[@id='alertFrame']/div")
-      if alert.text:
-         raise Exception(alert.text)
+      alert = driver.find_element_by_xpath("//*[@id='alertFrame']/div/*[normalize-space()]")
+      raise Exception(alert.text)
    except NoSuchElementException:
       # If not alert or empty then auth is correct, fall through
       pass
 
+   # Log in
    button = driver.find_element_by_id("cli_login_button")
    button.click()
+
+   # Wait for either success or try again
+   while True:
+      WebDriverWait(driver, 10).until(EC_OR(
+         # Success
+         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'success-icon')]")),
+         # Log in
+         EC.element_to_be_clickable((By.ID, "cli_login_button"))
+      ))
+      try:
+         driver.find_element_by_xpath("//div[contains(@class, 'success-icon')]")
+         break
+      except NoSuchElementException:
+         pass
+
+      try:
+         button = driver.find_element_by_id("cli_login_button")
+         button.click()
+      except NoSuchElementException:
+         pass
 
 if __name__ == "__main__":
    if DEBUG == 3: import pdb; pdb.set_trace()
@@ -283,7 +304,7 @@ if __name__ == "__main__":
    parser.add_argument("--version",
                        help="Version",
                        action="version",
-                       version="Schema: 2021-05-06 Code: 2021-05-12")
+                       version="Schema: 2021-05-06 Code: 2021-05-13")
    args = parser.parse_args()
    argsd = vars(args)
 
