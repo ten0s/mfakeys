@@ -3,7 +3,8 @@ all: chromedriver venv build
 chromedriver: bin/chromedriver
 
 bin/chromedriver:
-	wget --continue https://chromedriver.storage.googleapis.com/2.43/chromedriver_linux64.zip
+	# https://chromedriver.chromium.org/downloads
+	wget --continue https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip
 	unzip chromedriver_linux64.zip -d bin/
 
 venv:
