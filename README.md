@@ -54,6 +54,10 @@ See https://github.com/aws/aws-cli/issues/5061 and https://docs.python.org/3/lib
 $ BROWSER="mfakeys --login %s" aws sso login --profile PROFILE
 </pre>
 
+<pre>
+BROWSER="bash -c 'mfakeys --login %s || true'" aws sso login --profile PROFILE
+</pre>
+
 ### Resource file
 <pre>
 $ cat ~/.mfakeysrc
