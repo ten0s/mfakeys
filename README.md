@@ -51,11 +51,7 @@ $ aws ec2 describe-instances
 See https://github.com/aws/aws-cli/issues/5061 and https://docs.python.org/3/library/webbrowser.html for detail
 
 <pre>
-$ BROWSER="mfakeys --login %s" aws sso login --profile PROFILE
-</pre>
-
-<pre>
-BROWSER="bash -c 'mfakeys --login %s || true'" aws sso login --profile PROFILE
+$ BROWSER="bash -c 'dist/mfakeys --login %s || true'" aws sso login --profile PROFILE
 </pre>
 
 ### Resource file
