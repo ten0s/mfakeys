@@ -244,7 +244,8 @@ def do_login(driver, username, password, code, url_with_user_code):
    # Some error?
    try:
       alert = driver.find_element_by_xpath("//*[@id='alertFrame']/div/*[normalize-space()]")
-      raise Exception(alert.text)
+      if alert.is_displayed():
+         raise Exception(alert.text)
    except NoSuchElementException:
       # If not alert or empty then auth is correct, fall through
       pass
@@ -257,12 +258,12 @@ def do_login(driver, username, password, code, url_with_user_code):
    while True:
       WebDriverWait(driver, 10).until(EC_OR(
          # Success
-         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'success-icon')]")),
+         EC.presence_of_element_located((By.XPATH, "//span[contains(@class, 'awsui-icon-variant-success')]")),
          # Log in
          EC.element_to_be_clickable((By.ID, "cli_login_button"))
       ))
       try:
-         driver.find_element_by_xpath("//div[contains(@class, 'success-icon')]")
+         driver.find_element_by_xpath("//span[contains(@class, 'awsui-icon-variant-success')]")
          break
       except NoSuchElementException:
          pass
@@ -304,7 +305,7 @@ if __name__ == "__main__":
    parser.add_argument("--version",
                        help="Version",
                        action="version",
-                       version="Schema: 2021-05-06 Code: 2021-05-13")
+                       version="Schema: 2021-08-23 Code: 2021-08-23")
    args = parser.parse_args()
    argsd = vars(args)
 
