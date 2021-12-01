@@ -1,4 +1,4 @@
-all: chromedriver venv build
+all: chromedriver env build
 
 chromedriver: bin/chromedriver
 
@@ -7,12 +7,12 @@ bin/chromedriver:
 	wget --continue https://chromedriver.storage.googleapis.com/95.0.4638.17/chromedriver_linux64.zip
 	unzip chromedriver_linux64.zip -d bin/
 
-venv:
-	virtualenv --python python3 venv
-	venv/bin/pip install -r requirements.txt
+env:
+	virtualenv --python python3 env
+	env/bin/pip install -r requirements.txt
 
 build: mfakeys.py
-	venv/bin/pyinstaller --onefile --add-binary "bin/chromedriver:bin" mfakeys.py
+	env/bin/pyinstaller --onefile --add-binary "bin/chromedriver:bin" mfakeys.py
 
 clean:
-	rm -rf bin/ build/ dist/ venv/ *.pyc *.spec *.zip
+	rm -rf bin/ build/ dist/ env/ *.pyc *.spec *.zip

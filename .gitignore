@@ -1,7 +1,7 @@
 bin/
 build/
 dist/
-venv/
+env/
 *.pyc
 *.spec
 *.zip
