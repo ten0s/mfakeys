@@ -339,7 +339,7 @@ if __name__ == "__main__":
    chrome_options.add_argument("--disable-gpu")
    driver = webdriver.Chrome(
       executable_path=os.path.join(base_dir, "bin/chromedriver"),
-      chrome_options=chrome_options
+      options=chrome_options
    )
    try:
       if login:
