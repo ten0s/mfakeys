@@ -5,8 +5,7 @@ Fetch AWS MFA accounts and AWS keys, AWS CLI v2 automatic SSO login from
 ## Prerequisites
 
 In order to build **mfakeys** you need to have
-[Python 3.6.*](https://www.python.org/downloads/release/python-360/),
-[Virtualenv](https://virtualenv.pypa.io/en/latest/) and
+[Python 3.8+](https://www.python.org/downloads/release/python-380/),
 [GNU Make](http://www.gnu.org/software/make/) installed.
 
 ## Build

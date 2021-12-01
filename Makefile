@@ -8,7 +8,7 @@ bin/chromedriver:
 	unzip chromedriver_linux64.zip -d bin/
 
 env:
-	virtualenv --python python3 env
+	python3 -m venv env
 	env/bin/pip install -r requirements.txt
 
 build: mfakeys.py
