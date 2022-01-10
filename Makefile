@@ -4,7 +4,7 @@ chromedriver: bin/chromedriver
 
 bin/chromedriver:
 	# https://chromedriver.chromium.org/downloads
-	wget --continue https://chromedriver.storage.googleapis.com/95.0.4638.17/chromedriver_linux64.zip
+	wget --continue https://chromedriver.storage.googleapis.com/97.0.4692.71/chromedriver_linux64.zip
 	unzip chromedriver_linux64.zip -d bin/
 
 env:
